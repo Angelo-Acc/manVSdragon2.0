@@ -2,9 +2,10 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
+    static Random random = new Random();
 
     public static void main(String[] args) {
-        Random random = new Random();
+
 
         // Title
         System.out.println("**************************");
@@ -92,26 +93,30 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Enter Hero Hit Points: ");
-        int heroHP = scanner.nextInt();
+        Hero hero = new Hero();
+        System.out.println("Enter Hero hit points: ");
+        int userInput = scanner.nextInt();
+        hero.setHitPoints(userInput);
 
-        System.out.println("Enter Hero Damage points: ");
-        int heroDamage = scanner.nextInt();
+        System.out.println("Enter Hero damage points: ");
+        userInput = scanner.nextInt();
+        hero.setDamage(userInput);
+
 
         Dragon[] dragons = new Dragon[3];
-        dragons[0] = new Dragon(1000, 200);
-        dragons[1] = new Dragon(1000, 200);
-        dragons[2] = new Dragon(3000, 300);
+        dragons[0] = new Dragon(1000, 200, 10);
+        dragons[1] = new Dragon(1000, 200, 10);
+        dragons[2] = new Dragon(3000, 300, 40);
 
         boolean heroWins = false;
 
         while (true) {
-            System.out.println("Hero has " + heroHP + " HP and deals " + heroDamage + " points of damage.");
+            System.out.println("Hero has " + hero.getHitPoints() + " HP and deals " + hero.getDamage() + " points of damage.");
             System.out.println();
 
             printDragonStatus(dragons);
 
-            if (heroHP < 1) {
+            if (hero.getHitPoints() < 1) {
                 heroWins = false;
                 break;
             }
@@ -131,9 +136,9 @@ public class Main {
 
             System.out.println("Attacking Dragon " + dragonChoice);
 
-            heroAttacksDragon(dragons, heroDamage, dragonChoice);
+            heroAttacksDragon(dragons, hero, dragonChoice);
 
-            dragonsAttackHero(dragons, heroHP);
+            dragonsAttackHero(dragons, hero);
         }
 
         System.out.println("Battle Outcome");
@@ -150,23 +155,35 @@ public class Main {
         }
     }
 
-    private static void heroAttacksDragon(Dragon[] dragons, int heroDamage, int dragonChoice) {
-        Random random = new Random();
+    private static void heroAttacksDragon(Dragon[] dragons, Hero hero, int dragonChoice) {
+
 
         if (dragons[dragonChoice - 1].getHitPoints() < 1) {
             System.out.println("Dragon " + dragonChoice + " is already dead!");
         } else {
-            int heroHitsForDmg = random.nextInt(heroDamage);
+            int heroHitsForDmg = random.nextInt(hero.getDamage());
             dragons[dragonChoice - 1].setHitPoints(dragons[dragonChoice - 1].getHitPoints() - heroHitsForDmg);
         }
     }
 
-    private static void dragonsAttackHero(Dragon[] dragons, int heroHP) {
-        Random random = new Random();
+    private static void dragonsAttackHero(Dragon[] dragons, Hero hero) {
+
         for (int i = 0; i < dragons.length; i++) {
             if (dragons[i].getHitPoints() > 0) {
+                int critCheck = random.nextInt(100) + 1;
+                float damageMultiplier = 1.00F;
+
+                if(critCheck <= dragons[i].getCritChance()) {
+                    //its a crit hit
+                    System.out.println("CRITICAL STRIKE");
+                    damageMultiplier += 0.50F;
+                }
                 int dragonHitsForDmg = random.nextInt(dragons[i].getDamage());
-                heroHP = heroHP - dragonHitsForDmg;
+                int damageWithMultiplier = (int) ( (float) dragonHitsForDmg * damageMultiplier );
+
+                System.out.println("Original damage: " + dragonHitsForDmg + " with multiplier: " + damageWithMultiplier);
+                int newHitPoints = hero.getHitPoints() - damageWithMultiplier;
+                hero.setHitPoints(newHitPoints);
             }
         }
     }
