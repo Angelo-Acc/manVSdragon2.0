@@ -1,7 +1,16 @@
 public class Dragon {
     private int hitPoints;
     private int damage;
-    private int critChance; // int representation of a percentage chance to crit
+    private int critChance;
+    private int healCount;
+
+    public int getHealCount() {
+        return healCount;
+    }
+
+    public void setHealCount(int healCount) {
+        this.healCount = healCount;
+    }
 
     public int getCritChance() {
         return critChance;
@@ -11,12 +20,10 @@ public class Dragon {
         this.critChance = critChance;
     }
 
-
-
     public Dragon() {
         hitPoints  = 50;
         damage     = 5;
-        critChance = 2; // 2%
+        critChance = 2;
     }
 
     public Dragon(int hitPoints, int damage, int critChance) {
@@ -24,7 +31,6 @@ public class Dragon {
         this.damage = damage;
         this.critChance = critChance;
     }
-
 
     public int getHitPoints() {
         return hitPoints;
